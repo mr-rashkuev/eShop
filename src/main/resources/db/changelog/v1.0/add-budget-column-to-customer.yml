@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumnBudget
+      author: shamilDev
+      changes:
+        - addColumn:
+            tableName: customer
+            columns:
+              - column:
+                  name: budget
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: storeCreate
+      author: shamilDev
+      changes:
+        - createTable:
+            tableName: store
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKey:
+                      referencedColumnNames: id
+                      referencedTableName: product
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+
