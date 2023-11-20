@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +22,8 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final CustomerRepository customerRepository;
 
-    public List<Optional<OrderEntity>> findOrderByCustomer(Long customerId){
-        return orderRepository.findOrdersByCustomerId(customerId);
+    public List<OrderEntity> findOrderByCustomer(Long customerId){
+        return orderRepository.findOrdersByCustomer(customerId);
     }
 
     public List<OrderOutputRq> getAllOrders(){
