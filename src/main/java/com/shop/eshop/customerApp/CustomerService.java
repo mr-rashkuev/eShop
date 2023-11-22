@@ -16,13 +16,11 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
     private final CustomerRepository customerRepository;
 
-
     public CustomerRq getCustomerById(Long id) {
         CustomerEntity customer = customerRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
         return customerMapper.toDto(customer);
     }
-
 
     public void isEmailExists(String email) {
         if (customerRepository.getByEmail(email).isPresent()) {
@@ -70,7 +68,6 @@ public class CustomerService {
         phoneNumberValidator(customer.getPhoneNumber(), customerRq.getPhoneNumber());
         customer.setPhoneNumber(customer.getPhoneNumber());
         customerRepository.save(customer);
-
     }
 
     public List<CustomerRq> getAllCustomers() {

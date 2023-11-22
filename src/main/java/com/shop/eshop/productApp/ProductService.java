@@ -14,15 +14,14 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class ProductService {
-
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final CategoryRepository categoryRepository;
 
-
     public void addProduct(ProductInputRq productInputRq) {
         ProductEntity product = productMapper.toEntity(productInputRq);
-        CategoryEntity category = categoryRepository.findById(productInputRq.getCategory()).orElseThrow();
+        CategoryEntity category = categoryRepository
+                .findById(productInputRq.getCategory()).orElseThrow();
         product.setCategory(category);
         productRepository.save(product);
     }

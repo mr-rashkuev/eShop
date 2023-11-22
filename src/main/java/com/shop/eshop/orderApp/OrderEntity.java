@@ -3,6 +3,9 @@ package com.shop.eshop.orderApp;
 import com.shop.eshop.customerApp.CustomerEntity;
 import com.shop.eshop.Obtain;
 import com.shop.eshop.Payment;
+
+import com.shop.eshop.orderListApp.OrderItemEntity;
+import com.shop.eshop.orderListApp.OrderItemPK;
 import com.shop.eshop.productApp.ProductEntity;
 import com.shop.eshop.Status;
 import lombok.*;
@@ -10,6 +13,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,13 +47,8 @@ public class OrderEntity {
     @Column(name = "status")
     private Status status;
 
-    @OneToMany(cascade = {CascadeType.PERSIST,
-            CascadeType.MERGE})
-    @JoinTable(
-            name = "order_list",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<ProductEntity> productList;
+    @OneToMany
+    private List<OrderItemEntity> productList;
 
 
     public OrderEntity(CustomerEntity customer, String city, String address, Obtain obtaining, int cost, Payment payment, Status status) {
@@ -70,15 +69,16 @@ public class OrderEntity {
 
     }
 
-//    @PrePersist
-//    private void DateOfOrder() {
-//        this.date = LocalDateTime.now();
-//    }
+    @PrePersist
+    private void DateOfOrder() {
+        this.date = LocalDateTime.now();
+    }
 
-//    @PostPersist
-//    public void costCount() {
-//        for (ProductEntity product : productList) {
-//            cost += product.getPrice();
-//        }
-//    }
+
+    public void addProductToOrder(OrderItemEntity orderItem){
+        if (productList==null){
+            productList = new ArrayList<>();
+        }
+        productList.add(orderItem);
+    }
 }

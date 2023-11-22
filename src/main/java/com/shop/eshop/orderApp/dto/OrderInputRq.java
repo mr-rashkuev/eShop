@@ -4,7 +4,9 @@ import com.shop.eshop.Obtain;
 import com.shop.eshop.Payment;
 import com.shop.eshop.Status;
 import com.shop.eshop.customerApp.CustomerEntity;
+import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.productApp.ProductEntity;
+import com.shop.eshop.productApp.dto.ProductQuantityInOrder;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,6 +26,7 @@ public class OrderInputRq {
     private String address;
     private Obtain obtaining;
     private Payment payment;
+    private List<ProductQuantityInOrder> products;
 
 
 }

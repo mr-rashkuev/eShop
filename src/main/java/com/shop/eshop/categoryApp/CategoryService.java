@@ -14,7 +14,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-
     public List<CategoryRq> showAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toDto)
