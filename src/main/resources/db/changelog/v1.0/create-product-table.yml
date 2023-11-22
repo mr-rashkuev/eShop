@@ -22,7 +22,6 @@ databaseChangeLog:
                   name: category_id
                   type: bigint
                   constraints:
-                    nullable: false
                     foreignKeyName: fk_product_category
                     references: category(id)
               - column:
