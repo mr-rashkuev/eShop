@@ -1,29 +1,25 @@
 databaseChangeLog:
   - changeSet:
-      id: orderListCreate
+      id: orderItemCreate
       author: shamilDev
       changes:
         - createTable:
-            tableName: order_list
+            tableName: order_item
             columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
               - column:
                   name: order_id
                   type: bigint
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_orderList_order
-                    references: order(id)
+                    primaryKey: true
+                    primaryKeyName: pk_order_item
               - column:
                   name: product_id
                   type: bigint
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_orderList_product
-                    references: product(id)
+                    primaryKey: true
+                    primaryKeyName: pk_order_item
+              - column:
+                  name: quantity
+                  type: int

@@ -1,21 +1,21 @@
 package com.shop.eshop.productApp.dto;
 
-import com.shop.eshop.orderListApp.OrderItemPK;
+
 
 public class ProductQuantityInOrder {
-    private OrderItemPK productId;
+    private Long productId;
     private int quantityInOrder;
 
-    public ProductQuantityInOrder(OrderItemPK productId, int quantityInOrder) {
+    public ProductQuantityInOrder(Long productId, int quantityInOrder) {
         this.productId = productId;
         this.quantityInOrder = quantityInOrder;
     }
 
-    public OrderItemPK getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(OrderItemPK productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 

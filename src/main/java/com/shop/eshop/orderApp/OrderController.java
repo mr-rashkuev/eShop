@@ -15,11 +15,12 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/")
-    public void registerOrder(@RequestBody OrderInputRq orderInputRq){
+    public void registerOrder(@RequestBody OrderInputRq orderInputRq) {
         orderService.registerOrder(orderInputRq);
     }
+
     @GetMapping("/")
-    public List<OrderOutputRq> getAllOrders(){
+    public List<OrderOutputRq> getAllOrders() {
         return orderService.getAllOrders();
     }
 }

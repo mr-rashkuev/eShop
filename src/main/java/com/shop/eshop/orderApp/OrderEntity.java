@@ -1,5 +1,7 @@
 package com.shop.eshop.orderApp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.shop.eshop.customerApp.CustomerEntity;
 import com.shop.eshop.Obtain;
 import com.shop.eshop.Payment;
@@ -19,16 +21,15 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
-@Table(name = "order")
+@Table(name = "order_info")
 @NoArgsConstructor
-
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long orderId;
     @ManyToOne
-    @JoinColumn(name = "customerId")
+    @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
     @Column(name = "city")
     private String city;
@@ -45,11 +46,12 @@ public class OrderEntity {
     @Column(name = "payment")
     private Payment payment;
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany
+    @JsonBackReference
     private List<OrderItemEntity> productList;
-
 
     public OrderEntity(CustomerEntity customer, String city, String address, Obtain obtaining, int cost, Payment payment, Status status) {
         this.customer = customer;
@@ -73,7 +75,6 @@ public class OrderEntity {
     private void DateOfOrder() {
         this.date = LocalDateTime.now();
     }
-
 
     public void addProductToOrder(OrderItemEntity orderItem){
         if (productList==null){

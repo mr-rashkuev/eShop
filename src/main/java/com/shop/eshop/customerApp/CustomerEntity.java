@@ -30,11 +30,7 @@ public class CustomerEntity {
     @Column(name = "budget")
     private int budget;
 
-    @OneToMany(cascade={CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH},
-            mappedBy = "customer")
+    @OneToMany(mappedBy = "customer")
     private List<OrderEntity> orderList;
 
     public CustomerEntity(String firstName, String middleName, String lastName, String phoneNumber, String email, String city, int budget) {
