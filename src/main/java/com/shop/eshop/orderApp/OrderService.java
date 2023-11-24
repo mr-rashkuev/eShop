@@ -58,6 +58,7 @@ public class OrderService {
             ProductEntity product = productRepository.findById(item.getProductId()).orElseThrow(()-> new BusinessException("Данного товара нет в наличии"));
             if (product.getQuantity() - item.getQuantityInOrder() >= 0) {
                 createOrderItem(order, product, item.getQuantityInOrder());
+                product.setQuantity(product.getQuantity()-item.getQuantityInOrder());
             } else {
                 throw new BusinessException("Недостаточно товара на складе");
             }
