@@ -5,10 +5,12 @@ import com.shop.eshop.Payment;
 import com.shop.eshop.Status;
 import com.shop.eshop.customerApp.CustomerEntity;
 import com.shop.eshop.orderListApp.OrderItemEntity;
+import com.shop.eshop.orderListApp.dto.OrderItemOutputRq;
 import lombok.*;
 
 import javax.persistence.Column;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrderOutputRq {
     private Long orderId;
     private String customer;
@@ -26,6 +29,6 @@ public class OrderOutputRq {
     private int cost;
     private Payment payment;
     private Status status;
-  //  private List<OrderItemEntity>
+    private List<OrderItemEntity> orderItemList = new ArrayList<>();
 
 }

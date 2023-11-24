@@ -13,7 +13,6 @@ public interface ProductMapper {
     ProductOutputRq toDto(ProductEntity product);
 
     @Mapping(target = "category", ignore = true)
-    @Mapping(target = "productId", ignore = true)
-
+   // @Mapping(target = "id", ignore = true)
     ProductEntity toEntity(ProductInputRq productInputRq);
 }

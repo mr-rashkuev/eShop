@@ -12,11 +12,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProductOutputRq {
 
-    private Long productId;
+    private Long id;
     private String name;
     private String category;
     private int price;
     private int quantity;
-
 
 }

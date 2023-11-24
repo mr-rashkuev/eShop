@@ -15,12 +15,17 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ProductInputRq {
-
+    @NotEmpty
+    @NotNull
     private String name;
+    @NotNull
     private Long category;
+    @NotNull
+    @Min(1)
     private int price;
+    @NotNull
+    @Min(value = 0, message = "Задано некорреткное количество товара")
     private int quantity;
 
 

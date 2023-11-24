@@ -58,14 +58,16 @@ public class OrderService {
             ProductEntity product = productRepository.findById(item.getProductId()).orElseThrow(()-> new BusinessException("Данного товара нет в наличии"));
             if (product.getQuantity() - item.getQuantityInOrder() >= 0) {
                 createOrderItem(order, product, item.getQuantityInOrder());
+                product.setQuantity(product.getQuantity() - item.getQuantityInOrder());
+                productRepository.save(product);
             } else {
                 throw new BusinessException("Недостаточно товара на складе");
             }
         }
     }
     public void createOrderItem(OrderEntity order, ProductEntity product, int quantity){
-        OrderItemEntity orderItem = orderItemRepository.save(new OrderItemEntity(
-                order.getOrderId(), product.getId(), quantity));
+        OrderItemEntity orderItem = new OrderItemEntity(
+                order.getOrderId(), product.getId(), quantity);
         orderItemRepository.save(orderItem);
     }
 }
