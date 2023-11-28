@@ -43,7 +43,7 @@ public class OrderItemEntity {
     @EqualsAndHashCode
     @AllArgsConstructor
     @NoArgsConstructor
-    public class OrderItemPK implements Serializable {
+    public static class OrderItemPK implements Serializable {
         @Column(name = "order_id")
         private Long orderId;
         @Column(name = "product_id")

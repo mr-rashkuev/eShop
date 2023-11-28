@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,17 +58,32 @@ public class OrderService {
     }
 
     public void checkAndAddProductToOrder(OrderEntity order, List<ProductQuantityInOrder> productQuantityInOrders) {
+
+        List<Long> productIdList = productQuantityInOrders
+                .stream()
+                .map(ProductQuantityInOrder::getProductId)
+                .collect(Collectors.toList());
+        List<ProductEntity> productEntityList = productRepository.findByProductIds(productIdList)
+                .stream()
+                .map(productEntity -> productEntity.orElseThrow(()-> new BusinessException("Товар не найден")))
+                .collect(Collectors.toList());
         for (ProductQuantityInOrder item : productQuantityInOrders) {
-            ProductEntity product = productRepository.findById(item.getProductId()).orElseThrow(()-> new BusinessException("Товар не найден"));
-            int productQuantityLeft = product.getQuantity() - item.getQuantityInOrder();
-            if (productQuantityLeft >= 0) {
-                createOrderItem(order, product, item.getQuantityInOrder());
-                product.setQuantity(productQuantityLeft);
+            for(ProductEntity product : productEntityList){
+                if(Objects.equals(item.getProductId(), product.getId())){
+
+                    int productQuantityLeft = product.getQuantity() - item.getQuantityInOrder();
+                    if (productQuantityLeft >= 0) {
+                        createOrderItem(order, product, item.getQuantityInOrder());
+
+                    }
+                    product.setQuantity(productQuantityLeft);
+                    productRepository.save(product);
+
             } else {
                 throw new BusinessException("Недостаточно товара на складе");
             }
         }
-    }
+    }}
     public void createOrderItem(OrderEntity order, ProductEntity product, int quantity){
         OrderItemEntity orderItem = new OrderItemEntity(
                 order.getOrderId(), product.getId(), quantity);
