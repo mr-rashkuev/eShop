@@ -18,8 +18,7 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Column(name = "name")
-    @NotNull
+    @Column(name = "name", nullable = false)
     @NotEmpty
     private String name;
     @ManyToOne

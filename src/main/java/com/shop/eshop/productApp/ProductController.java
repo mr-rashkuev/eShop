@@ -1,7 +1,7 @@
 package com.shop.eshop.productApp;
 
 import com.shop.eshop.productApp.dto.ProductInputRq;
-import com.shop.eshop.productApp.dto.ProductOutputRq;
+import com.shop.eshop.productApp.dto.ProductRs;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/")
-    public List<ProductOutputRq> showAllProducts() {
+    public List<ProductRs> showAllProducts() {
         return productService.showAllProducts();
     }
 
@@ -25,7 +25,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductOutputRq getProductById(@PathVariable Long id) {
+    public ProductRs getProductById(@PathVariable Long id) {
         return productService.getProductById(id);
     }
 

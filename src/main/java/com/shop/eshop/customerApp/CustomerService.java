@@ -16,22 +16,17 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
     private final CustomerRepository customerRepository;
 
+    public List<CustomerRq> getAllCustomers() {
+        return customerRepository.findAll()
+                .stream()
+                .map(customerMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public CustomerRq getCustomerById(Long id) {
         CustomerEntity customer = customerRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
         return customerMapper.toDto(customer);
-    }
-
-    public void isEmailExists(String email) {
-        if (customerRepository.getByEmail(email).isPresent()) {
-            throw new BusinessException("This email already taken");
-        }
-    }
-
-    public void isPhoneNumberExists(String phoneNumber) {
-        if (customerRepository.getByPhoneNumber(phoneNumber).isPresent()) {
-            throw new BusinessException("This phone number already taken");
-        }
     }
 
     public void registerCustomer(CustomerRq customerRq) {
@@ -39,20 +34,6 @@ public class CustomerService {
         isPhoneNumberExists(customerRq.getPhoneNumber());
         CustomerEntity customer = customerMapper.toEntity(customerRq);
         customerRepository.save(customer);
-    }
-
-    public void emailValidator(String oldEmail, String newEmail) {
-        if (newEmail != null &&
-                !Objects.equals(oldEmail, newEmail)) {
-            isEmailExists(newEmail);
-        }
-    }
-
-    public void phoneNumberValidator(String oldNumber, String newNumber) {
-        if (newNumber != null &&
-                !Objects.equals(oldNumber, newNumber)) {
-            isEmailExists(newNumber);
-        }
     }
 
     public void updateCustomer(Long id, CustomerRq customerRq) {
@@ -70,13 +51,31 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    public List<CustomerRq> getAllCustomers() {
-        return customerRepository.findAll()
-                .stream()
-                .map(customerMapper::toDto)
-                .collect(Collectors.toList());
+    public void emailValidator(String oldEmail, String newEmail) {
+        if (newEmail != null &&
+                !Objects.equals(oldEmail, newEmail)) {
+            isEmailExists(newEmail);
+        }
     }
 
+    public void phoneNumberValidator(String oldNumber, String newNumber) {
+        if (newNumber != null &&
+                !Objects.equals(oldNumber, newNumber)) {
+            isEmailExists(newNumber);
+        }
+    }
+
+    public void isEmailExists(String email) {
+        if (customerRepository.getByEmail(email).isPresent()) {
+            throw new BusinessException("This email already taken");
+        }
+    }
+
+    public void isPhoneNumberExists(String phoneNumber) {
+        if (customerRepository.getByPhoneNumber(phoneNumber).isPresent()) {
+            throw new BusinessException("This phone number already taken");
+        }
+    }
 
 }
 

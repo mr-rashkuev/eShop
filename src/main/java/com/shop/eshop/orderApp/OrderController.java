@@ -1,11 +1,10 @@
 package com.shop.eshop.orderApp;
 
 import com.shop.eshop.orderApp.dto.OrderInputRq;
-import com.shop.eshop.orderApp.dto.OrderOutputRq;
+import com.shop.eshop.orderApp.dto.OrderRs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +20,7 @@ public class OrderController {
     }
 
     @GetMapping("/")
-    public List<OrderOutputRq> getAllOrders() {
+    public List<OrderRs> getAllOrders() {
         return orderService.getAllOrders();
     }
 }

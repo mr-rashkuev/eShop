@@ -7,7 +7,7 @@ import com.shop.eshop.Obtain;
 import com.shop.eshop.Payment;
 
 import com.shop.eshop.orderListApp.OrderItemEntity;
-import com.shop.eshop.orderListApp.OrderItemPK;
+import com.shop.eshop.orderListApp.OrderItemEntity.OrderItemPK;
 import com.shop.eshop.productApp.ProductEntity;
 import com.shop.eshop.Status;
 import lombok.*;
@@ -50,7 +50,6 @@ public class OrderEntity {
     private Status status;
 
     @OneToMany
-    @JsonBackReference
     private List<OrderItemEntity> productList;
 
     public OrderEntity(CustomerEntity customer, String city, String address, Obtain obtaining, int cost, Payment payment, Status status) {
@@ -72,7 +71,7 @@ public class OrderEntity {
     }
 
     @PrePersist
-    private void DateOfOrder() {
+    private void setDate() {
         this.date = LocalDateTime.now();
     }
 

@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.io.Serializable;
 
 @Entity
 @Getter
@@ -13,7 +14,7 @@ import javax.validation.constraints.Min;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@IdClass(OrderItemPK.class)
+@IdClass(OrderItemEntity.OrderItemPK.class)
 @Table(name = "order_item")
 public class OrderItemEntity {
     @Id
@@ -36,4 +37,18 @@ public class OrderItemEntity {
         this.productId = productId;
         this.quantity = quantity;
     }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class OrderItemPK implements Serializable {
+        @Column(name = "order_id")
+        private Long orderId;
+        @Column(name = "product_id")
+        private Long productId;
+
+    }
+
 }

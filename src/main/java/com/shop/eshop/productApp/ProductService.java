@@ -3,7 +3,7 @@ package com.shop.eshop.productApp;
 import com.shop.eshop.categoryApp.CategoryEntity;
 import com.shop.eshop.categoryApp.CategoryRepository;
 import com.shop.eshop.productApp.dto.ProductInputRq;
-import com.shop.eshop.productApp.dto.ProductOutputRq;
+import com.shop.eshop.productApp.dto.ProductRs;
 import com.shop.eshop.productApp.mapper.ProductMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public List<ProductOutputRq> showAllProducts() {
+    public List<ProductRs> showAllProducts() {
         return productRepository.findAll().stream()
                 .map(productMapper::toDto)
                 .collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public ProductOutputRq getProductById(Long id) {
+    public ProductRs getProductById(Long id) {
         return productMapper.toDto(
                 productRepository.findById(id).orElseThrow());
     }
