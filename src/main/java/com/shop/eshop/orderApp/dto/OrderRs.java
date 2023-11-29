@@ -27,6 +27,6 @@ public class OrderRs {
     private int cost;
     private Payment payment;
     private Status status;
-    private List<OrderItemRs> orderItemList = new ArrayList<>();
+    private List<OrderItemRs> orderItemList;
 
 }

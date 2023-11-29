@@ -5,9 +5,13 @@ import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 interface OrderItemMapper {
 
     @Mapping(target = "product", source = "orderItem.product.name")
     OrderItemRs toDto(OrderItemEntity orderItem);
+    @Mapping(target = "product", source = "orderItem.product.name")
+    List<OrderItemRs> toDto(List<OrderItemEntity> orderItemEntityList);
 }

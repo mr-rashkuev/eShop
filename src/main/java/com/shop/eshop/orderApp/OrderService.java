@@ -65,6 +65,7 @@ public class OrderService {
                 .stream()
                 .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
                 .collect(Collectors.toList());
+        int costOfOrder = 0;
         for (ProductAndQuantity item : productAndQuantities) {
             for (ProductEntity product : productEntityList) {
                 if (Objects.equals(item.getProductId(), product.getId())) {
@@ -72,12 +73,15 @@ public class OrderService {
                     if (productQuantityLeft >= 0) {
                         createOrderItem(order, product, item.getQuantity());
                         product.setQuantity(productQuantityLeft);
+                        costOfOrder += product.getPrice()*item.getQuantity();
+
                     } else {
                         throw new BusinessException("Недостаточно товара на складе");
                     }
                 }
             }
         }
+        order.setCost(costOfOrder);
     }
 
     public void createOrderItem(OrderEntity order, ProductEntity product, int quantity) {
