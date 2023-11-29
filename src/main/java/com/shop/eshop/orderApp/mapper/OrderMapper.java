@@ -14,4 +14,10 @@ public interface OrderMapper {
 
     @Mapping(target = "customer", ignore = true)
     OrderEntity toEntity(OrderInputRq orderInputRq);
+
+    default OrderRs map(OrderEntity order) {
+        OrderRs orderRs = new OrderRs();
+        orderRs.setCustomer(order.getCustomer().getFirstName() + " " + order.getCustomer().getMiddleName() + " " + order.getCustomer().getLastName());
+        return orderRs;
+    }
 }

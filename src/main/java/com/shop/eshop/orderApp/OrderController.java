@@ -23,4 +23,14 @@ public class OrderController {
     public List<OrderRs> getAllOrders() {
         return orderService.getAllOrders();
     }
+
+    @GetMapping("/{customerId}")
+    public List<OrderRs> findOrdersByCustomer(@PathVariable Long customerId){
+        return orderService.findOrdersByCustomer(customerId);
+    }
+
+    @PutMapping("/cancel/{id}")
+    public void cancelOrder(@PathVariable Long id){
+        orderService.cancelOrder(id);
+    }
 }

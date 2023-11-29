@@ -2,5 +2,6 @@ package com.shop.eshop;
 
 public enum Status {
     RESERVED,
-    CLOSED
+    CLOSED,
+    CANCELED
 }

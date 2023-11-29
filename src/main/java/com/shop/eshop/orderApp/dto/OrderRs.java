@@ -28,5 +28,4 @@ public class OrderRs {
     private Payment payment;
     private Status status;
     private List<OrderItemRs> orderItemList;
-
 }

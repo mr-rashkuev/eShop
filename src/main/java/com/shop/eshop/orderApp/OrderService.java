@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,8 +31,10 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
 
-    public List<OrderRs> findOrderByCustomer(Long customerId) {
-        return orderRepository.findOrdersByCustomer(customerId)
+    public List<OrderRs> findOrdersByCustomer(Long customerId) {
+        CustomerEntity customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new BusinessException("Нет пользователя с ID " + customerId));
+        return orderRepository.findOrdersByCustomer(customer)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
@@ -53,7 +56,16 @@ public class OrderService {
         order.setStatus(Status.RESERVED);
         orderRepository.save(order);
         checkAndAddProductToOrder(order, orderInputRq.getProducts());
+    }
 
+    public void cancelOrder(Long id) {
+        OrderEntity order = orderRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Заказ с ID " + id + " не найден"));
+        if (LocalDateTime.now().getHour() - order.getDate().getHour() >= 20) {
+            order.setStatus(Status.CANCELED);
+        } else {
+            throw new BusinessException("Слишком поздно...");
+        }
     }
 
     public void checkAndAddProductToOrder(OrderEntity order, List<ProductAndQuantity> productAndQuantities) {
@@ -73,8 +85,7 @@ public class OrderService {
                     if (productQuantityLeft >= 0) {
                         createOrderItem(order, product, item.getQuantity());
                         product.setQuantity(productQuantityLeft);
-                        costOfOrder += product.getPrice()*item.getQuantity();
-
+                        costOfOrder += product.getPrice() * item.getQuantity();
                     } else {
                         throw new BusinessException("Недостаточно товара на складе");
                     }
