@@ -1,5 +1,6 @@
 package com.shop.eshop.productApp;
 
+import com.shop.eshop.productApp.dto.ProductAndQuantity;
 import com.shop.eshop.productApp.dto.ProductInputRq;
 import com.shop.eshop.productApp.dto.ProductRs;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,10 @@ public class ProductController {
                               @RequestParam int price,
                               @RequestParam int quantity) {
         productService.updateProduct(id, price, quantity);
+    }
+
+    @PutMapping("/quantity")
+    public void addBatchToStore(@RequestBody List<ProductAndQuantity> productAndQuantity){
+        productService.addProductQuantity(productAndQuantity);
     }
 }

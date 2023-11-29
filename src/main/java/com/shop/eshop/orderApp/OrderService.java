@@ -11,14 +11,13 @@ import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.orderListApp.OrderItemRepository;
 import com.shop.eshop.productApp.ProductEntity;
 import com.shop.eshop.productApp.ProductRepository;
-import com.shop.eshop.productApp.dto.ProductQuantityInOrder;
+import com.shop.eshop.productApp.dto.ProductAndQuantity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,16 +27,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final CustomerRepository customerRepository;
-
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
 
     public List<OrderRs> findOrderByCustomer(Long customerId) {
-        List<OrderRs> orderRsList = orderRepository.findOrdersByCustomer(customerId)
+        return orderRepository.findOrdersByCustomer(customerId)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
-        return orderRsList;
     }
 
     public List<OrderRs> getAllOrders() {
@@ -46,45 +43,44 @@ public class OrderService {
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public void registerOrder(OrderInputRq orderInputRq) {
         OrderEntity order = orderMapper.toEntity(orderInputRq);
         CustomerEntity customer = customerRepository.findById(orderInputRq.getCustomer())
                 .orElseThrow(() -> new BusinessException("Данный покупатель не зарегистрирован в системе"));
         order.setCustomer(customer);
+        order.setStatus(Status.RESERVED);
         orderRepository.save(order);
         checkAndAddProductToOrder(order, orderInputRq.getProducts());
-        order.setStatus(Status.RESERVED);
+
     }
 
-    public void checkAndAddProductToOrder(OrderEntity order, List<ProductQuantityInOrder> productQuantityInOrders) {
-
-        List<Long> productIdList = productQuantityInOrders
+    public void checkAndAddProductToOrder(OrderEntity order, List<ProductAndQuantity> productAndQuantities) {
+        List<Long> productIdList = productAndQuantities
                 .stream()
-                .map(ProductQuantityInOrder::getProductId)
+                .map(ProductAndQuantity::getProductId)
                 .collect(Collectors.toList());
         List<ProductEntity> productEntityList = productRepository.findByProductIds(productIdList)
                 .stream()
-                .map(productEntity -> productEntity.orElseThrow(()-> new BusinessException("Товар не найден")))
+                .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
                 .collect(Collectors.toList());
-        for (ProductQuantityInOrder item : productQuantityInOrders) {
-            for(ProductEntity product : productEntityList){
-                if(Objects.equals(item.getProductId(), product.getId())){
-
-                    int productQuantityLeft = product.getQuantity() - item.getQuantityInOrder();
+        for (ProductAndQuantity item : productAndQuantities) {
+            for (ProductEntity product : productEntityList) {
+                if (Objects.equals(item.getProductId(), product.getId())) {
+                    int productQuantityLeft = product.getQuantity() - item.getQuantity();
                     if (productQuantityLeft >= 0) {
-                        createOrderItem(order, product, item.getQuantityInOrder());
-
+                        createOrderItem(order, product, item.getQuantity());
+                        product.setQuantity(productQuantityLeft);
+                    } else {
+                        throw new BusinessException("Недостаточно товара на складе");
                     }
-                    product.setQuantity(productQuantityLeft);
-                    productRepository.save(product);
-
-            } else {
-                throw new BusinessException("Недостаточно товара на складе");
+                }
             }
         }
-    }}
-    public void createOrderItem(OrderEntity order, ProductEntity product, int quantity){
+    }
+
+    public void createOrderItem(OrderEntity order, ProductEntity product, int quantity) {
         OrderItemEntity orderItem = new OrderItemEntity(
                 order.getOrderId(), product.getId(), quantity);
         orderItemRepository.save(orderItem);
