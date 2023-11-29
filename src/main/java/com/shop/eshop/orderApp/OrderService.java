@@ -61,8 +61,9 @@ public class OrderService {
     public void cancelOrder(Long id) {
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Заказ с ID " + id + " не найден"));
-        if (LocalDateTime.now().getHour() - order.getDate().getHour() >= 20) {
+        if (LocalDateTime.now().getHour() - order.getDate().getHour() <= 20) {
             order.setStatus(Status.CANCELED);
+            orderRepository.save(order);
         } else {
             throw new BusinessException("Слишком поздно...");
         }
