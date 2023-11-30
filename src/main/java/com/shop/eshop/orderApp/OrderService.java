@@ -69,7 +69,7 @@ public class OrderService {
         }
     }
 
-    public void checkAndAddProductToOrder(OrderEntity order, List<ProductAndQuantity> productAndQuantities) {
+    private void checkAndAddProductToOrder(OrderEntity order, List<ProductAndQuantity> productAndQuantities) {
         List<Long> productIdList = productAndQuantities
                 .stream()
                 .map(ProductAndQuantity::getProductId)
@@ -96,7 +96,7 @@ public class OrderService {
         order.setCost(costOfOrder);
     }
 
-    public void createOrderItem(OrderEntity order, ProductEntity product, int quantity) {
+    private void createOrderItem(OrderEntity order, ProductEntity product, int quantity) {
         OrderItemEntity orderItem = new OrderItemEntity(
                 order.getOrderId(), product.getId(), quantity);
         orderItemRepository.save(orderItem);

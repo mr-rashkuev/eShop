@@ -1,5 +1,6 @@
 package com.shop.eshop.orderListApp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shop.eshop.orderApp.OrderEntity;
 import com.shop.eshop.productApp.ProductEntity;
 import lombok.*;
@@ -25,9 +26,11 @@ public class OrderItemEntity {
     private Long productId;
     @ManyToOne
     @JoinColumn(name = "order_id", insertable=false, updatable=false)
+    @JsonIgnore
     private OrderEntity order;
     @ManyToOne
     @JoinColumn(name = "product_id", insertable=false, updatable=false)
+    @JsonIgnore
     private ProductEntity product;
     //@Min(value = 1, message = "Задано некорреткное количество товара")
     private int quantity;
