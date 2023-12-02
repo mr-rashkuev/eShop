@@ -55,7 +55,9 @@ public class OrderService {
                 .orElseThrow(() -> new BusinessException("Заказ с ID " + id + " не найден"));
         if (order.getStatus() != Status.CANCELED && order.getStatus() != Status.CLOSED && order.getStatus() != Status.SHIPPED) {
             order.setStatus(Status.CANCELED);
-            Map<ProductEntity, OrderItemEntity> mapOrder = orderItemRepository.findAllByOrderId(order.getOrderId()).stream().collect(Collectors.toMap(OrderItemEntity::getProduct, Function.identity()));
+            Map<ProductEntity, OrderItemEntity> mapOrder = orderItemRepository.findAllByOrderId(order.getOrderId())
+                    .stream()
+                    .collect(Collectors.toMap(OrderItemEntity::getProduct, Function.identity()));
             for (Map.Entry<ProductEntity, OrderItemEntity> entry: mapOrder.entrySet()){
                 int quantityToReturn = entry.getKey().getQuantity() + entry.getValue().getQuantity();
                 entry.getKey().setQuantity(quantityToReturn);
