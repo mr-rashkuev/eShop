@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +50,32 @@ public class OrderService {
     }
 
     @Transactional
+    public void cancelOrder(Long id) {
+        OrderEntity order = orderRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Заказ с ID " + id + " не найден"));
+        if (order.getStatus() != Status.CANCELED && order.getStatus() != Status.CLOSED && order.getStatus() != Status.SHIPPED) {
+            order.setStatus(Status.CANCELED);
+            Map<ProductEntity, OrderItemEntity> mapOrder = orderItemRepository.findAllByOrderId(order.getOrderId()).stream().collect(Collectors.toMap(OrderItemEntity::getProduct, Function.identity()));
+            for (Map.Entry<ProductEntity, OrderItemEntity> entry: mapOrder.entrySet()){
+                int quantityToReturn = entry.getKey().getQuantity() + entry.getValue().getQuantity();
+                entry.getKey().setQuantity(quantityToReturn);
+            }
+            orderRepository.save(order);
+        } else {
+            throw new BusinessException("Слишком поздно...");
+        }
+    }
+//            List<OrderItemEntity> orderItemEntityList = orderItemRepository.findAllByOrderId(order.getOrderId());
+//            List<ProductEntity> productCancelList = orderItemEntityList
+//                    .stream().map(OrderItemEntity::getProduct).collect(Collectors.toList());
+//            for (ProductEntity product : productCancelList) {
+//                for (OrderItemEntity orderItem : orderItemEntityList)
+//                    if (product.getId().equals(orderItem.getProductId())) {
+//                        product.setQuantity(product.getQuantity() + orderItem.getQuantity());
+//                    }
+//            }
+
+    @Transactional
     public void registerOrder(OrderInputRq orderInputRq) {
         OrderEntity order = orderMapper.toEntity(orderInputRq);
         CustomerEntity customer = customerRepository.findById(orderInputRq.getCustomer())
@@ -56,17 +84,6 @@ public class OrderService {
         order.setStatus(Status.RESERVED);
         orderRepository.save(order);
         checkAndAddProductToOrder(order, orderInputRq.getProducts());
-    }
-
-    public void cancelOrder(Long id) {
-        OrderEntity order = orderRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Заказ с ID " + id + " не найден"));
-        if (LocalDateTime.now().getHour() - order.getDate().getHour() <= 20) {
-            order.setStatus(Status.CANCELED);
-            orderRepository.save(order);
-        } else {
-            throw new BusinessException("Слишком поздно...");
-        }
     }
 
     private void checkAndAddProductToOrder(OrderEntity order, List<ProductAndQuantity> productAndQuantities) {
