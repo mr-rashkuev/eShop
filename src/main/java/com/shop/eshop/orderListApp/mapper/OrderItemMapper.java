@@ -4,7 +4,6 @@ import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -16,4 +15,5 @@ public interface OrderItemMapper {
 
     @Mapping(target = "product", source = "orderItem.product.name")
     List<OrderItemRs> toDto(List<OrderItemEntity> orderItemEntityList);
+
 }
