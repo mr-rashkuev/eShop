@@ -58,11 +58,10 @@ public class OrderService {
             Map<ProductEntity, OrderItemEntity> mapOrder = orderItemRepository.findAllByOrderId(order.getOrderId())
                     .stream()
                     .collect(Collectors.toMap(OrderItemEntity::getProduct, Function.identity()));
-            for (Map.Entry<ProductEntity, OrderItemEntity> entry: mapOrder.entrySet()){
+            for (Map.Entry<ProductEntity, OrderItemEntity> entry: mapOrder.entrySet()) {
                 int quantityToReturn = entry.getKey().getQuantity() + entry.getValue().getQuantity();
                 entry.getKey().setQuantity(quantityToReturn);
             }
-            orderRepository.save(order);
         } else {
             throw new BusinessException("Слишком поздно...");
         }

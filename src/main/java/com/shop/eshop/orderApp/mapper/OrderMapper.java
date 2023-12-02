@@ -16,16 +16,18 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-//    OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
+
     @Mapping(target = "customer", source = "order.customer.firstName")
-//    @Mapping(target = "orderItemList", source = "productList", qualifiedByName = "toORs")
+    @Mapping(target = "orderItemList", source = "productList", qualifiedByName = "toORs")
     OrderRs toDto(OrderEntity order);
 
     @Mapping(target = "customer", ignore = true)
     OrderEntity toEntity(OrderInputRq orderInputRq);
 
-//    @Named("toORs")
-//    static OrderItemRs orderItemToOrderItemRs(OrderItemEntity orderItem) {
-//        return new OrderItemRs(orderItem.getProduct().getName(), orderItem.getQuantity());
-//    }
+    @Named("toORs")
+    default List<OrderItemRs> orderItemToOrderItemRs(List<OrderItemEntity> orderItem) {
+        return orderItem.stream()
+                .map(order -> new OrderItemRs(order.getProduct().getName(),
+                        order.getQuantity())).collect(Collectors.toList());
+    }
 }

@@ -26,11 +26,11 @@ public class OrderItemEntity {
     private Long productId;
     @ManyToOne
     @JoinColumn(name = "order_id", insertable=false, updatable=false)
-    @JsonIgnore
+ //   @JsonIgnore
     private OrderEntity order;
     @ManyToOne
     @JoinColumn(name = "product_id", insertable=false, updatable=false)
-    @JsonIgnore
+ //   @JsonIgnore
     private ProductEntity product;
     //@Min(value = 1, message = "Задано некорреткное количество товара")
     private int quantity;
