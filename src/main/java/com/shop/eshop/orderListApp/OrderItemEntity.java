@@ -17,6 +17,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @IdClass(OrderItemEntity.OrderItemPK.class)
 @Table(name = "order_item")
+@ToString
 public class OrderItemEntity {
     @Id
     @Column(name = "order_id")
@@ -24,11 +25,11 @@ public class OrderItemEntity {
     @Id
     @Column(name = "product_id")
     private Long productId;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", insertable=false, updatable=false)
  //   @JsonIgnore
     private OrderEntity order;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", insertable=false, updatable=false)
  //   @JsonIgnore
     private ProductEntity product;

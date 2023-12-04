@@ -2,14 +2,12 @@ package com.shop.eshop.orderListApp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
+@Data
 @AllArgsConstructor
-@Getter
-@Setter
-public class OrderItemRs {
+public class MostSells {
 
-    private String product;
+    private String name;
     private int quantity;
+
 }

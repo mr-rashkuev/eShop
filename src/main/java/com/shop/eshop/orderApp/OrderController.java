@@ -2,7 +2,8 @@ package com.shop.eshop.orderApp;
 
 import com.shop.eshop.orderApp.dto.OrderInputRq;
 import com.shop.eshop.orderApp.dto.OrderRs;
-import com.shop.eshop.orderListApp.OrderItemEntity;
+import com.shop.eshop.orderListApp.dto.MostSells;
+import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,9 @@ public class OrderController {
     }
 
     @GetMapping("/productSell/")
-    public List<OrderItemEntity> getMostSells() {
-        return orderStatisticsService.getMostSells();
+    public List<MostSells> getMostSells() {
+        return orderStatisticsService.someMethod();
     }
+
+
 }

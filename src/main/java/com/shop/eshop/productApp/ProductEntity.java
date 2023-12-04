@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "product")
 @NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

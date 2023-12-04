@@ -53,7 +53,7 @@ public class OrderService {
     public void cancelOrder(Long id) {
         OrderEntity order = orderRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Заказ с ID " + id + " не найден"));
-        if (order.getStatus() != Status.CANCELED && order.getStatus() != Status.CLOSED && order.getStatus() != Status.SHIPPED) {
+        if (order.getStatus() == Status.RESERVED) {
             order.setStatus(Status.CANCELED);
             Map<ProductEntity, OrderItemEntity> mapOrder = orderItemRepository.findAllByOrderId(order.getOrderId())
                     .stream()
@@ -66,15 +66,6 @@ public class OrderService {
             throw new BusinessException("Слишком поздно...");
         }
     }
-//            List<OrderItemEntity> orderItemEntityList = orderItemRepository.findAllByOrderId(order.getOrderId());
-//            List<ProductEntity> productCancelList = orderItemEntityList
-//                    .stream().map(OrderItemEntity::getProduct).collect(Collectors.toList());
-//            for (ProductEntity product : productCancelList) {
-//                for (OrderItemEntity orderItem : orderItemEntityList)
-//                    if (product.getId().equals(orderItem.getProductId())) {
-//                        product.setQuantity(product.getQuantity() + orderItem.getQuantity());
-//                    }
-//            }
 
     @Transactional
     public void registerOrder(OrderInputRq orderInputRq) {

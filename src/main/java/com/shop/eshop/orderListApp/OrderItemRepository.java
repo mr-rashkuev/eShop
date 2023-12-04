@@ -11,6 +11,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItemEntity, Orde
 
     List<OrderItemEntity> findAllByOrderId(Long id);
 
-    @Query("select productId, sum(quantity) from OrderItemEntity group by productId order by sum(quantity)")
-    List<OrderItemEntity> findMostSellableProducts();
+//    @Query("select oi.productId, sum(oi.quantity) from OrderItemEntity oi join oi.orderId  group by oi.productId order by sum(oi.quantity)")
+//    List<OrderItemEntity> findMostSellableProducts();
 }
