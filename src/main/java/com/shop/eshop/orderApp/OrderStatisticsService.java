@@ -6,12 +6,15 @@ import com.shop.eshop.orderListApp.dto.MostSells;
 import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import com.shop.eshop.productApp.ProductEntity;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.summingInt;
 
 
 @Service
@@ -21,16 +24,23 @@ public class OrderStatisticsService {
     private final OrderItemRepository orderItemRepository;
 
 
-//    public List<OrderItemEntity> getMostSells(){
-//        return orderItemRepository.findMostSellableProducts();
-//    }
+    public List<MostSells> getMostSells() {
+        return orderItemRepository.findMostSellProducts();
+    }
 
-    public List<MostSells> someMethod(){
-        Map<ProductEntity, Integer> map = orderItemRepository.findAll().stream().collect(groupingBy(OrderItemEntity::getProduct, Collectors.summingInt(OrderItemEntity::getQuantity)));
+    public List<MostSells> findMostSells() {
+        Map<ProductEntity, Integer> map = orderItemRepository.findAll().stream()
+                .collect(groupingBy(OrderItemEntity::getProduct, summingInt(OrderItemEntity::getQuantity)));
         List<MostSells> mostSells = new ArrayList<>();
-        for(Map.Entry <ProductEntity, Integer> entry: map.entrySet()){
-            mostSells.add(new MostSells(entry.getKey().getName(), entry.getValue()));
+        for (Map.Entry<ProductEntity, Integer> entry : map.entrySet()) {
+            mostSells.add(new MostSells(entry.getKey().getName(), Long.valueOf(entry.getValue())));
         }
         return mostSells.stream().sorted(Comparator.comparing(MostSells::getQuantity, Comparator.reverseOrder())).limit(5).collect(Collectors.toList());
     }
+
+//    public List<OrderItemEntity> getByPeriod(LocalDateTime low, LocalDateTime high){
+//        return orderItemRepository.getItemsByPeriod(low, high);
+//}
+
+
 }

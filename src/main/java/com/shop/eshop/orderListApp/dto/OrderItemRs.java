@@ -12,4 +12,5 @@ public class OrderItemRs {
 
     private String product;
     private int quantity;
+
 }

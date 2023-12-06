@@ -2,11 +2,13 @@ package com.shop.eshop.orderApp;
 
 import com.shop.eshop.orderApp.dto.OrderInputRq;
 import com.shop.eshop.orderApp.dto.OrderRs;
+import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.orderListApp.dto.MostSells;
 import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -39,8 +41,16 @@ public class OrderController {
 
     @GetMapping("/productSell/")
     public List<MostSells> getMostSells() {
-        return orderStatisticsService.someMethod();
+        return orderStatisticsService.findMostSells();
     }
 
+    @GetMapping("/productMost/")
+    public List<MostSells> getMost() {
+        return orderStatisticsService.getMostSells();
+    }
 
+//    @GetMapping("/period/{low}/{high}")
+//    public List<OrderItemEntity> getByPeriod(@PathVariable LocalDateTime low, @PathVariable LocalDateTime high) {
+//        return orderStatisticsService.getByPeriod(low, high);
+//    }
 }
