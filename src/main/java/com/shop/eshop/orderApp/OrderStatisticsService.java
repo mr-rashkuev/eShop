@@ -4,6 +4,7 @@ import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.orderListApp.OrderItemRepository;
 import com.shop.eshop.orderListApp.dto.MostSells;
 import com.shop.eshop.orderListApp.dto.OrderItemRs;
+import com.shop.eshop.orderListApp.mapper.OrderItemMapper;
 import com.shop.eshop.productApp.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
@@ -22,6 +23,7 @@ import static java.util.stream.Collectors.summingInt;
 public class OrderStatisticsService {
 
     private final OrderItemRepository orderItemRepository;
+    private final OrderItemMapper orderItemMapper;
 
 
     public List<MostSells> getMostSells() {
@@ -38,9 +40,11 @@ public class OrderStatisticsService {
         return mostSells.stream().sorted(Comparator.comparing(MostSells::getQuantity, Comparator.reverseOrder())).limit(5).collect(Collectors.toList());
     }
 
-//    public List<OrderItemEntity> getByPeriod(LocalDateTime low, LocalDateTime high){
-//        return orderItemRepository.getItemsByPeriod(low, high);
-//}
+    public List<OrderItemRs> getByPeriod(LocalDateTime low, LocalDateTime high){
+        return orderItemRepository.getItemsByPeriod(low, high).stream()
+                .map(orderItemMapper::toDto)
+                .collect(Collectors.toList());
+}
 
 
 }

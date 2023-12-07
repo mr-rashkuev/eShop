@@ -49,8 +49,9 @@ public class OrderController {
         return orderStatisticsService.getMostSells();
     }
 
-//    @GetMapping("/period/{low}/{high}")
-//    public List<OrderItemEntity> getByPeriod(@PathVariable LocalDateTime low, @PathVariable LocalDateTime high) {
-//        return orderStatisticsService.getByPeriod(low, high);
-//    }
+    @GetMapping("/period/")
+    public List<OrderItemRs> getByPeriod(@RequestParam(value = "low", required = false) LocalDateTime low,
+                                         @RequestParam(value = "high", required = false) LocalDateTime high) {
+        return orderStatisticsService.getByPeriod(low, high);
+    }
 }
