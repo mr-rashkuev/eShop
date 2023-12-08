@@ -6,6 +6,7 @@ import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.orderListApp.dto.MostSells;
 import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -50,8 +51,8 @@ public class OrderController {
     }
 
     @GetMapping("/period/")
-    public List<OrderItemRs> getByPeriod(@RequestParam(value = "low", required = false) LocalDateTime low,
-                                         @RequestParam(value = "high", required = false) LocalDateTime high) {
+    public List<OrderItemRs> getByPeriod(@RequestParam(name = "low", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDateTime low,
+                                         @RequestParam(name = "high", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDateTime high) {
         return orderStatisticsService.getByPeriod(low, high);
     }
 }
