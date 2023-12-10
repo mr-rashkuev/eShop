@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,8 +52,8 @@ public class OrderController {
     }
 
     @GetMapping("/period/")
-    public List<OrderItemRs> getByPeriod(@RequestParam(name = "low", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDateTime low,
-                                         @RequestParam(name = "high", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDateTime high) {
-        return orderStatisticsService.getByPeriod(low, high);
+    public List<OrderItemRs> getByPeriod(@RequestParam(name = "low", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate low,
+                                         @RequestParam(name = "high", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate high) {
+        return orderStatisticsService.getByPeriod(low.atStartOfDay(), high.atStartOfDay());
     }
 }
