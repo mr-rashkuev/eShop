@@ -3,7 +3,7 @@ package com.shop.eshop.productApp;
 import com.shop.eshop.categoryApp.CategoryEntity;
 import com.shop.eshop.categoryApp.CategoryRepository;
 import com.shop.eshop.customerApp.BusinessException;
-import com.shop.eshop.productApp.dto.ProductAndQuantity;
+import com.shop.eshop.productApp.dto.ProductDetails;
 import com.shop.eshop.productApp.dto.ProductInputRq;
 import com.shop.eshop.productApp.dto.ProductRs;
 import com.shop.eshop.productApp.mapper.ProductMapper;
@@ -47,13 +47,13 @@ public class ProductService {
                 productRepository.findById(id).orElseThrow());
     }
 
-    public void addProductQuantity(List<ProductAndQuantity> productAndQuantity) {
-        List<Long> list = productAndQuantity.stream().map(ProductAndQuantity::getProductId).collect(Collectors.toList());
+    public void addProductQuantity(List<ProductDetails> productDetails) {
+        List<Long> list = productDetails.stream().map(ProductDetails::getProductId).collect(Collectors.toList());
         List<ProductEntity> productEntityList = productRepository.findByProductIds(list)
                 .stream()
                 .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
                 .collect(Collectors.toList());
-        for (ProductAndQuantity item : productAndQuantity) {
+        for (ProductDetails item : productDetails) {
             for (ProductEntity product : productEntityList) {
                 if (Objects.equals(item.getProductId(), product.getId())) {
                     product.setQuantity(product.getQuantity() + item.getQuantity());

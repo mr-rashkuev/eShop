@@ -30,8 +30,8 @@ public class CustomerService {
     }
 
     public void registerCustomer(CustomerRq customerRq) {
-        isEmailExists(customerRq.getEmail());
-        isPhoneNumberExists(customerRq.getPhoneNumber());
+        CheckEmailExists(customerRq.getEmail());
+        CheckPhoneNumberExists(customerRq.getPhoneNumber());
         CustomerEntity customer = customerMapper.toEntity(customerRq);
         customerRepository.save(customer);
     }
@@ -43,35 +43,35 @@ public class CustomerService {
         customer.setMiddleName(customerRq.getMiddleName());
         customer.setLastName(customerRq.getLastName());
         customer.setCity(customerRq.getCity());
-        emailValidator(customer.getEmail(), customerRq.getEmail());
+        emailValidate(customer.getEmail(), customerRq.getEmail());
         customer.setEmail(customerRq.getEmail());
         customer.setPhoneNumber(customer.getPhoneNumber());
-        phoneNumberValidator(customer.getPhoneNumber(), customerRq.getPhoneNumber());
+        phoneNumberValidate(customer.getPhoneNumber(), customerRq.getPhoneNumber());
         customer.setPhoneNumber(customer.getPhoneNumber());
         customerRepository.save(customer);
     }
 
-    public void emailValidator(String oldEmail, String newEmail) {
+    public void emailValidate(String oldEmail, String newEmail) {
         if (newEmail != null &&
                 !Objects.equals(oldEmail, newEmail)) {
-            isEmailExists(newEmail);
+            CheckEmailExists(newEmail);
         }
     }
 
-    public void phoneNumberValidator(String oldNumber, String newNumber) {
+    public void phoneNumberValidate(String oldNumber, String newNumber) {
         if (newNumber != null &&
                 !Objects.equals(oldNumber, newNumber)) {
-            isEmailExists(newNumber);
+            CheckEmailExists(newNumber);
         }
     }
 
-    public void isEmailExists(String email) {
+    public void CheckEmailExists(String email) {
         if (customerRepository.getByEmail(email).isPresent()) {
             throw new BusinessException("This email already taken");
         }
     }
 
-    public void isPhoneNumberExists(String phoneNumber) {
+    public void CheckPhoneNumberExists(String phoneNumber) {
         if (customerRepository.getByPhoneNumber(phoneNumber).isPresent()) {
             throw new BusinessException("This phone number already taken");
         }

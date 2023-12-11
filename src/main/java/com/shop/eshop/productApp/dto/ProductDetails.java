@@ -2,11 +2,11 @@ package com.shop.eshop.productApp.dto;
 
 
 
-public class ProductAndQuantity {
+public class ProductDetails {
     private Long productId;
     private int quantity;
 
-    public ProductAndQuantity(Long productId, int quantity) {
+    public ProductDetails(Long productId, int quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }

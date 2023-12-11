@@ -31,7 +31,7 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
-    @GetMapping("/{customerId}")
+    @GetMapping("/customer/{customerId}")
     public List<OrderRs> findOrdersByCustomer(@PathVariable Long customerId) {
         return orderService.findOrdersByCustomer(customerId);
     }
@@ -52,8 +52,8 @@ public class OrderController {
     }
 
     @GetMapping("/period/")
-    public List<OrderItemRs> getByPeriod(@RequestParam(name = "low", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate low,
-                                         @RequestParam(name = "high", required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate high) {
+    public List<OrderItemRs> getByPeriod(@RequestParam(name = "low") @DateTimeFormat(pattern="yyyyMMdd") LocalDate low,
+                                         @RequestParam(name = "high") @DateTimeFormat(pattern="yyyyMMdd") LocalDate high) {
         return orderStatisticsService.getByPeriod(low.atStartOfDay(), high.atStartOfDay());
     }
 }

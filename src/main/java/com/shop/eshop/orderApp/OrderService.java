@@ -11,12 +11,11 @@ import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.orderListApp.OrderItemRepository;
 import com.shop.eshop.productApp.ProductEntity;
 import com.shop.eshop.productApp.ProductRepository;
-import com.shop.eshop.productApp.dto.ProductAndQuantity;
+import com.shop.eshop.productApp.dto.ProductDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,17 +77,18 @@ public class OrderService {
         checkAndAddProductToOrder(order, orderInputRq.getProducts());
     }
 
-    private void checkAndAddProductToOrder(OrderEntity order, List<ProductAndQuantity> productAndQuantities) {
+    private void checkAndAddProductToOrder(OrderEntity order, List<ProductDetails> productAndQuantities) {
+
         List<Long> productIdList = productAndQuantities
                 .stream()
-                .map(ProductAndQuantity::getProductId)
+                .map(ProductDetails::getProductId)
                 .collect(Collectors.toList());
         List<ProductEntity> productEntityList = productRepository.findByProductIds(productIdList)
                 .stream()
                 .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
                 .collect(Collectors.toList());
         int costOfOrder = 0;
-        for (ProductAndQuantity item : productAndQuantities) {
+        for (ProductDetails item : productAndQuantities) {
             for (ProductEntity product : productEntityList) {
                 if (Objects.equals(item.getProductId(), product.getId())) {
                     int productQuantityLeft = product.getQuantity() - item.getQuantity();

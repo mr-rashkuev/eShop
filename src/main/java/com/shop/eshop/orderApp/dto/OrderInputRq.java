@@ -2,7 +2,7 @@ package com.shop.eshop.orderApp.dto;
 
 import com.shop.eshop.Obtain;
 import com.shop.eshop.Payment;
-import com.shop.eshop.productApp.dto.ProductAndQuantity;
+import com.shop.eshop.productApp.dto.ProductDetails;
 import lombok.*;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class OrderInputRq {
     private String address;
     private Obtain obtaining;
     private Payment payment;
-    private List<ProductAndQuantity> products;
+    private List<ProductDetails> products;
 
 
 }

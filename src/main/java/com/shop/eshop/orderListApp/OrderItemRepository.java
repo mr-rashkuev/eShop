@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,6 +19,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItemEntity, Orde
             "FROM OrderItemEntity oi GROUP BY oi.productId,oi.product.name ORDER BY sum(oi.quantity) DESC")
     List<MostSells> findMostSellProducts();
 
-    @Query("FROM OrderItemEntity oi join OrderEntity o on oi.order where o.date between ?1 and ?2")
+    @Query("FROM OrderItemEntity oi join OrderEntity o on oi.orderId=o.orderId where o.date between ?1 and ?2")
     List<OrderItemEntity> getItemsByPeriod(LocalDateTime low, LocalDateTime high);
 }
