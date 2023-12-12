@@ -3,6 +3,7 @@ package com.shop.eshop.orderApp;
 import com.shop.eshop.orderApp.dto.OrderInputRq;
 import com.shop.eshop.orderApp.dto.OrderRs;
 import com.shop.eshop.orderListApp.OrderItemEntity;
+import com.shop.eshop.orderListApp.dto.ItemView;
 import com.shop.eshop.orderListApp.dto.MostSells;
 import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +53,8 @@ public class OrderController {
     }
 
     @GetMapping("/period/")
-    public List<OrderItemRs> getByPeriod(@RequestParam(name = "low") @DateTimeFormat(pattern="yyyyMMdd") LocalDate low,
-                                         @RequestParam(name = "high") @DateTimeFormat(pattern="yyyyMMdd") LocalDate high) {
+    public List<ItemView> getByPeriod(@RequestParam(name = "low") @DateTimeFormat(pattern="yyyyMMdd") LocalDate low,
+                                      @RequestParam(name = "high") @DateTimeFormat(pattern="yyyyMMdd") LocalDate high) {
         return orderStatisticsService.getByPeriod(low.atStartOfDay(), high.atStartOfDay());
     }
 }

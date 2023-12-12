@@ -49,10 +49,10 @@ public class ProductService {
 
     public void addProductQuantity(List<ProductDetails> productDetails) {
         List<Long> list = productDetails.stream().map(ProductDetails::getProductId).collect(Collectors.toList());
-        List<ProductEntity> productEntityList = productRepository.findByProductIds(list)
-                .stream()
-                .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
-                .collect(Collectors.toList());
+        List<ProductEntity> productEntityList = productRepository.findByProductIds(list);
+//                .stream()
+//                .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
+//                .collect(Collectors.toList());
         for (ProductDetails item : productDetails) {
             for (ProductEntity product : productEntityList) {
                 if (Objects.equals(item.getProductId(), product.getId())) {

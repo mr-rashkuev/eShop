@@ -2,6 +2,7 @@ package com.shop.eshop.orderApp;
 
 import com.shop.eshop.orderListApp.OrderItemEntity;
 import com.shop.eshop.orderListApp.OrderItemRepository;
+import com.shop.eshop.orderListApp.dto.ItemView;
 import com.shop.eshop.orderListApp.dto.MostSells;
 import com.shop.eshop.orderListApp.dto.OrderItemRs;
 import com.shop.eshop.orderListApp.mapper.OrderItemMapper;
@@ -41,11 +42,12 @@ public class OrderStatisticsService {
         return mostSells.stream().sorted(Comparator.comparing(MostSells::getQuantity, Comparator.reverseOrder())).limit(5).collect(Collectors.toList());
     }
 
-    public List<OrderItemRs> getByPeriod(LocalDateTime low, LocalDateTime high){
-        return orderItemRepository.getItemsByPeriod(low, high).stream()
-                .map(orderItemMapper::toDto)
-                .collect(Collectors.toList());
-}
-
+    public List<ItemView> getByPeriod(LocalDateTime low, LocalDateTime high) {
+        return orderItemRepository.getItemsByPeriod(low, high);
+//        .stream()
+//                .map(orderItemMapper::toDto)
+//                .collect(Collectors.toList());
+//}
+    }
 
 }

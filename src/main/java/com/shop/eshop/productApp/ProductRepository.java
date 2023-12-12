@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("from ProductEntity where id in :ids")
-    List<Optional<ProductEntity>> findByProductIds(List<Long> ids);
+    List<ProductEntity> findByProductIds(List<Long> ids);
 
 }

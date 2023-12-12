@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +58,7 @@ public class OrderService {
             Map<ProductEntity, OrderItemEntity> mapOrder = orderItemRepository.findAllByOrderId(order.getOrderId())
                     .stream()
                     .collect(Collectors.toMap(OrderItemEntity::getProduct, Function.identity()));
-            for (Map.Entry<ProductEntity, OrderItemEntity> entry: mapOrder.entrySet()) {
+            for (Map.Entry<ProductEntity, OrderItemEntity> entry : mapOrder.entrySet()) {
                 int quantityToReturn = entry.getKey().getQuantity() + entry.getValue().getQuantity();
                 entry.getKey().setQuantity(quantityToReturn);
             }
@@ -83,10 +84,12 @@ public class OrderService {
                 .stream()
                 .map(ProductDetails::getProductId)
                 .collect(Collectors.toList());
-        List<ProductEntity> productEntityList = productRepository.findByProductIds(productIdList)
-                .stream()
-                .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
-                .collect(Collectors.toList());
+
+        List<ProductEntity> productEntityList  = productRepository.findByProductIds(productIdList);
+//                .stream().map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден"))).collect(Collectors.toList());
+        if(productEntityList.isEmpty()){
+            throw new BusinessException("Вы не добавили товар в корзину");
+        }
         int costOfOrder = 0;
         for (ProductDetails item : productAndQuantities) {
             for (ProductEntity product : productEntityList) {
