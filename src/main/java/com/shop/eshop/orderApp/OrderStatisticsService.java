@@ -27,7 +27,6 @@ public class OrderStatisticsService {
     private final OrderItemRepository orderItemRepository;
     private final OrderItemMapper orderItemMapper;
 
-
     public List<MostSells> getMostSells() {
         return orderItemRepository.findMostSellProducts();
     }
@@ -44,10 +43,6 @@ public class OrderStatisticsService {
 
     public List<ItemView> getByPeriod(LocalDateTime low, LocalDateTime high) {
         return orderItemRepository.getItemsByPeriod(low, high);
-//        .stream()
-//                .map(orderItemMapper::toDto)
-//                .collect(Collectors.toList());
-//}
     }
 
 }

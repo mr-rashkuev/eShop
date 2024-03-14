@@ -53,8 +53,8 @@ public class OrderController {
     }
 
     @GetMapping("/period/")
-    public List<ItemView> getByPeriod(@RequestParam(name = "low") @DateTimeFormat(pattern="yyyyMMdd") LocalDate low,
-                                      @RequestParam(name = "high") @DateTimeFormat(pattern="yyyyMMdd") LocalDate high) {
+    public List<ItemView> getByPeriod(@RequestParam(name = "low") @DateTimeFormat(pattern = "yyyyMMdd") LocalDate low,
+                                      @RequestParam(name = "high") @DateTimeFormat(pattern = "yyyyMMdd") LocalDate high) {
         return orderStatisticsService.getByPeriod(low.atStartOfDay(), high.atStartOfDay());
     }
 }

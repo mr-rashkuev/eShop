@@ -13,4 +13,5 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity,Long> {
 
     @Query("from CustomerEntity where phoneNumber=?1")
     Optional<CustomerEntity> getByPhoneNumber(String phoneNumber);
+
 }
