@@ -41,4 +41,6 @@ public class ProductController {
     public void addBatchToStore(@RequestBody List<ProductDetails> productDetails){
         productService.addProductQuantity(productDetails);
     }
+
+
 }
