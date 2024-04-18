@@ -6,6 +6,10 @@ import com.shop.eshop.productApp.dto.ProductRs;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -40,6 +44,12 @@ public class ProductController {
     @PutMapping("/quantity")
     public void addBatchToStore(@RequestBody List<ProductDetails> productDetails){
         productService.addProductQuantity(productDetails);
+    }
+
+    @PostMapping("/file")
+    public void addProductFromFile(@RequestBody File file) throws FileNotFoundException {
+        InputStream inputStream = new FileInputStream(file);
+        productService.addProductsFromFile(inputStream);
     }
 
 
