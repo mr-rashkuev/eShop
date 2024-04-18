@@ -19,8 +19,8 @@ import java.util.List;
 
 @Component
 public class ProductParser {
-
     public List<ProductFileImport> parse(InputStream file) {
+        List<ProductFileImport> productFileImportList = new ArrayList<>();
         Workbook workbook;
         try {
             workbook = new XSSFWorkbook(file);
@@ -28,18 +28,17 @@ public class ProductParser {
             throw new RuntimeException(e);
         }
         Sheet sheet = workbook.getSheetAt(0);
-        for (Row row : sheet) {
-            Iterator<Cell> cellIterator = row.iterator();
-            ProductInputRq productInputRq = new ProductInputRq();
-            while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-                if (cell.getStringCellValue().equals("Наименование")) {
-
-                }
-            }
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            ProductFileImport productFileImport = new ProductFileImport();
+            ProductFileImport.builder()
+                    .name(row.getCell(0).getStringCellValue())
+                    .category(row.getCell(1).getStringCellValue())
+                    .price((int) row.getCell(3).getNumericCellValue())
+                    .quantity((int) row.getCell(3).getNumericCellValue())
+                    .build();
+            productFileImportList.add(productFileImport);
         }
-        return new ArrayList<>();
+        return productFileImportList;
     }
-
-
 }

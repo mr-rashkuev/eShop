@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class ProductValidator {
-    private final ProductRepository productRepository;
+
     private final CategoryRepository categoryRepository;
 
     public Map<ProductFileImport, Boolean> CheckProductExist(List<ProductFileImport> productFileImportList, List<ProductEntity> products) {
@@ -34,9 +34,6 @@ public class ProductValidator {
     }
 
     public boolean checkCategoryMatch(String name) {
-        if (categoryRepository.findByName(name) != null) {
-            return true;
-        }
-        return false;
+        return categoryRepository.findByName(name) != null;
     }
 }

@@ -33,8 +33,6 @@ databaseChangeLog:
               - column:
                   name: date
                   type: date
-
-
               - column:
                   name: obtaining
                   type: text
@@ -43,13 +41,9 @@ databaseChangeLog:
               - column:
                   name: cost
                   type: int
-
-
               - column:
                   name: status
                   type: text
-
-
               - column:
                   name: payment
                   type: text

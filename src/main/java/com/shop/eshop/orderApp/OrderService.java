@@ -16,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +37,7 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
+    private final HttpClient httpClient;
 
     public List<OrderRs> findOrdersByCustomer(Long customerId) {
         CustomerEntity customer = customerRepository.findById(customerId)
@@ -77,16 +83,18 @@ public class OrderService {
         orderRepository.save(order);
         checkAndAddProductToOrder(order, orderInputRq.getProducts());
     }
+    public String payTheOrder(){
+        httpClient.performRequest("url");
+       return "";
+    }
 
     private void checkAndAddProductToOrder(OrderEntity order, List<ProductDetails> productAndQuantities) {
-
         List<Long> productIdList = productAndQuantities
                 .stream()
                 .map(ProductDetails::getProductId)
                 .collect(Collectors.toList());
 
         List<ProductEntity> productEntityList  = productRepository.findByProductIds(productIdList);
-//                .stream().map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден"))).collect(Collectors.toList());
         if(productEntityList.isEmpty()){
             throw new BusinessException("Вы не добавили товар в корзину");
         }

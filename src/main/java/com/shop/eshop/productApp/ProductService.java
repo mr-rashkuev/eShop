@@ -10,9 +10,13 @@ import com.shop.eshop.productApp.dto.ProductInputRq;
 import com.shop.eshop.productApp.dto.ProductRs;
 import com.shop.eshop.productApp.mapper.ProductMapper;
 import lombok.AllArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,9 +60,6 @@ public class ProductService {
     public void addProductQuantity(List<ProductDetails> productDetails) {
         List<Long> list = productDetails.stream().map(ProductDetails::getProductId).collect(Collectors.toList());
         List<ProductEntity> productEntityList = productRepository.findByProductIds(list);
-//                .stream()
-//                .map(productEntity -> productEntity.orElseThrow(() -> new BusinessException("Товар не найден")))
-//                .collect(Collectors.toList());
         for (ProductDetails item : productDetails) {
             for (ProductEntity product : productEntityList) {
                 if (Objects.equals(item.getProductId(), product.getId())) {
@@ -70,20 +71,46 @@ public class ProductService {
     }
 
     public void addProductsFromFile(InputStream inputStream) {
+        Map<ProductFileImport, Boolean> productEntityMap = checkProductExistenceInDataBase(inputStream);
+        for (Map.Entry<ProductFileImport, Boolean> entry : productEntityMap.entrySet()) {
+            if (entry.getValue()) {
+                ProductEntity product = productRepository.findByName(entry.getKey().getName());
+                product.setQuantity(product.getQuantity() + entry.getKey().getQuantity());
+            } else {
+                CategoryEntity category = categoryRepository.findByName(entry.getKey().getCategory());
+                addProduct(new ProductInputRq(entry.getKey().getName(), category.getId(), entry.getKey().getPrice(), entry.getKey().getPrice()));
+            }
+        }
+    }
+
+    private Map<ProductFileImport, Boolean> checkProductExistenceInDataBase(InputStream inputStream) {
         List<ProductFileImport> productFileImportList = productParser.parse(inputStream);
         List<String> names = productFileImportList.stream()
                 .map(ProductFileImport::getName)
                 .collect(Collectors.toList());
         List<ProductEntity> products = productRepository.findByProductNames(names);
-        Map<ProductFileImport, Boolean> productEntityMap = productValidator.CheckProductExist(productFileImportList, products);
-        for (Map.Entry<ProductFileImport, Boolean> entry : productEntityMap.entrySet()) {
-            if (entry.getValue()) {
-                ProductEntity product = productRepository.findByName(entry.getKey().getName());
-                product.setQuantity(product.getQuantity()+entry.getKey().getQuantity());
-            }else {
-                CategoryEntity category = categoryRepository.findByName(entry.getKey().getCategory());
-                addProduct(new ProductInputRq(entry.getKey().getName(),category.getId(),entry.getKey().getPrice(),entry.getKey().getPrice()));
+        return productValidator.CheckProductExist(productFileImportList, products);
+    }
+
+    public void exportProductListToFile() throws IOException {
+        List<ProductRs> productRsList = showAllProducts();
+        try (OutputStream ops = new FileOutputStream("C:\\Users\\GAMER\\Downloads\\TXT.xls");
+             Workbook workbook = new SXSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("products");
+            for (Row row : sheet) {
+                for (ProductRs productRs : productRsList) {
+                    row.getCell(0).setCellValue(productRs.getId());
+                    row.getCell(1).setCellValue(productRs.getName());
+                    row.getCell(2).setCellValue(productRs.getCategory());
+                    row.getCell(3).setCellValue(productRs.getPrice());
+                    row.getCell(4).setCellValue(productRs.getQuantity());
+                }
             }
+        } catch (IOException e) {
+            throw new IOException(e.getCause());
+
         }
     }
+
 }
+
