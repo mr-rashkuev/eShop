@@ -10,6 +10,7 @@ import com.shop.eshop.productApp.dto.ProductInputRq;
 import com.shop.eshop.productApp.dto.ProductRs;
 import com.shop.eshop.productApp.mapper.ProductMapper;
 import lombok.AllArgsConstructor;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -72,7 +73,7 @@ public class ProductService {
 
     public void addProductsFromFile(InputStream inputStream) {
         List<ProductFileImport> productFileImportList = productParser.parse(inputStream);
-        Map<ProductFileImport, Boolean> productEntityMap = checkProductExistenceInDataBase(inputStream, productFileImportList);
+        Map<ProductFileImport, Boolean> productEntityMap = checkProductExistenceInDataBase(productFileImportList);
         for (Map.Entry<ProductFileImport, Boolean> entry : productEntityMap.entrySet()) {
             if (entry.getValue()) {
                 ProductEntity product = productRepository.findByName(entry.getKey().getName());
@@ -84,29 +85,21 @@ public class ProductService {
         }
     }
 
-    private Map<ProductFileImport, Boolean> checkProductExistenceInDataBase(InputStream inputStream, List<ProductFileImport> productFileImportList) {
+    private Map<ProductFileImport, Boolean> checkProductExistenceInDataBase(List<ProductFileImport> productFileImportList) {
         List<String> names = productFileImportList.stream()
                 .map(ProductFileImport::getName)
                 .collect(Collectors.toList());
         List<ProductEntity> products = productRepository.findByProductNames(names);
-        return productValidator.checkProductExist(productFileImportList, products);
+        return productValidator.validate(productFileImportList, products);
     }
 
     public InputStream exportProductListToFile() throws IOException {
         List<ProductRs> productRsList = showAllProducts();
-        InputStream inputStream = null;
+        InputStream inputStream;
         Workbook workbook = new SXSSFWorkbook();
-        Sheet sheet = workbook.createSheet("products");
-        int rowCount = 1;
-        for (ProductRs productRs : productRsList) {
-            Row row = sheet.createRow(rowCount++);
-            row.createCell(0).setCellValue(productRs.getId());
-            row.createCell(1).setCellValue(productRs.getName());
-            row.createCell(2).setCellValue(productRs.getCategory());
-            row.createCell(3).setCellValue(productRs.getPrice());
-            row.createCell(4).setCellValue(productRs.getQuantity());
-        }
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+        writeHeaders(workbook);
+        writeValuesToFile(workbook, productRsList);
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             workbook.write(out);
             byte[] bytes = out.toByteArray();
             inputStream = new ByteArrayInputStream(bytes);
@@ -118,5 +111,30 @@ public class ProductService {
         return inputStream;
     }
 
+    private void writeHeaders(Workbook workbook){
+        String[] headers = new String[]{"Идентификационный номер", "Наименование", "Категория", "Цена", "Количество"};
+        Sheet sheet = workbook.createSheet("products");
+        int cellNum = 0;
+        Row row = sheet.createRow(0);
+        for (String header : headers) {
+            row.createCell(cellNum++).setCellValue(header);
+        }
+    }
+
+    private void writeValuesToFile(Workbook workbook, List<ProductRs> productRsList){
+        int rowCount = 1;
+        for (ProductRs productRs : productRsList) {
+            Row row = workbook.getSheet("products").createRow(rowCount++);
+            row.createCell(0).setCellValue(productRs.getId());
+            row.createCell(1).setCellValue(productRs.getName());
+            row.createCell(2).setCellValue(productRs.getCategory());
+            row.createCell(3).setCellValue(productRs.getPrice());
+            row.createCell(4).setCellValue(productRs.getQuantity());
+        }
+    }
+
+
 }
+
+
 

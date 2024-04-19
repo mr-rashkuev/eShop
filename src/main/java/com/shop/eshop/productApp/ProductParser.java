@@ -33,7 +33,7 @@ public class ProductParser {
             ProductFileImport productFileImport = ProductFileImport.builder()
                     .name(row.getCell(0).getStringCellValue())
                     .category(row.getCell(1).getStringCellValue())
-                    .price((int) row.getCell(3).getNumericCellValue())
+                    .price((int) row.getCell(2).getNumericCellValue())
                     .quantity((int) row.getCell(3).getNumericCellValue())
                     .build();
             productFileImportList.add(productFileImport);
