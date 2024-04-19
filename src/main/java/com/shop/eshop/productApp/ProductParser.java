@@ -30,8 +30,7 @@ public class ProductParser {
         Sheet sheet = workbook.getSheetAt(0);
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
-            ProductFileImport productFileImport = new ProductFileImport();
-            ProductFileImport.builder()
+            ProductFileImport productFileImport = ProductFileImport.builder()
                     .name(row.getCell(0).getStringCellValue())
                     .category(row.getCell(1).getStringCellValue())
                     .price((int) row.getCell(3).getNumericCellValue())

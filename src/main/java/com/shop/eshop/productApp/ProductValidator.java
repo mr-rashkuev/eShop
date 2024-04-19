@@ -2,7 +2,6 @@ package com.shop.eshop.productApp;
 
 import com.shop.eshop.categoryApp.CategoryRepository;
 import com.shop.eshop.productApp.dto.ProductFileImport;
-import com.shop.eshop.productApp.dto.ProductRs;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,28 +11,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 @Component
 @AllArgsConstructor
 public class ProductValidator {
 
     private final CategoryRepository categoryRepository;
 
-    public Map<ProductFileImport, Boolean> CheckProductExist(List<ProductFileImport> productFileImportList, List<ProductEntity> products) {
-
+    public Map<ProductFileImport, Boolean> checkProductExist(List<ProductFileImport> productFileImportList, List<ProductEntity> products) {
         Map<ProductFileImport, Boolean> checkMap = new HashMap<>();
+        Set<String> productNamesSet = products.stream().map(ProductEntity::getName).collect(Collectors.toSet());
         for (ProductFileImport productFileImport : productFileImportList) {
-            for (ProductEntity product : products) {
-                if(productFileImport.getName().equals(product.getName())){
-                    checkMap.put(productFileImport, true);
-                }
-                else{checkMap.put(productFileImport, false);}
-
+            if (productNamesSet.contains(productFileImport.getName())) {
+                checkMap.put(productFileImport, true);
+            } else {
+                checkMap.put(productFileImport, false);
             }
         }
         return checkMap;
     }
 
     public boolean checkCategoryMatch(String name) {
-        return categoryRepository.findByName(name) != null;
+        return categoryRepository.findByName(name).isPresent();
     }
 }

@@ -71,45 +71,51 @@ public class ProductService {
     }
 
     public void addProductsFromFile(InputStream inputStream) {
-        Map<ProductFileImport, Boolean> productEntityMap = checkProductExistenceInDataBase(inputStream);
+        List<ProductFileImport> productFileImportList = productParser.parse(inputStream);
+        Map<ProductFileImport, Boolean> productEntityMap = checkProductExistenceInDataBase(inputStream, productFileImportList);
         for (Map.Entry<ProductFileImport, Boolean> entry : productEntityMap.entrySet()) {
             if (entry.getValue()) {
                 ProductEntity product = productRepository.findByName(entry.getKey().getName());
                 product.setQuantity(product.getQuantity() + entry.getKey().getQuantity());
             } else {
-                CategoryEntity category = categoryRepository.findByName(entry.getKey().getCategory());
+                CategoryEntity category = categoryRepository.findByName(entry.getKey().getCategory()).orElseThrow();
                 addProduct(new ProductInputRq(entry.getKey().getName(), category.getId(), entry.getKey().getPrice(), entry.getKey().getPrice()));
             }
         }
     }
 
-    private Map<ProductFileImport, Boolean> checkProductExistenceInDataBase(InputStream inputStream) {
-        List<ProductFileImport> productFileImportList = productParser.parse(inputStream);
+    private Map<ProductFileImport, Boolean> checkProductExistenceInDataBase(InputStream inputStream, List<ProductFileImport> productFileImportList) {
         List<String> names = productFileImportList.stream()
                 .map(ProductFileImport::getName)
                 .collect(Collectors.toList());
         List<ProductEntity> products = productRepository.findByProductNames(names);
-        return productValidator.CheckProductExist(productFileImportList, products);
+        return productValidator.checkProductExist(productFileImportList, products);
     }
 
-    public void exportProductListToFile() throws IOException {
+    public InputStream exportProductListToFile() throws IOException {
         List<ProductRs> productRsList = showAllProducts();
-        try (OutputStream ops = new FileOutputStream("C:\\Users\\GAMER\\Downloads\\TXT.xls");
-             Workbook workbook = new SXSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("products");
-            for (Row row : sheet) {
-                for (ProductRs productRs : productRsList) {
-                    row.getCell(0).setCellValue(productRs.getId());
-                    row.getCell(1).setCellValue(productRs.getName());
-                    row.getCell(2).setCellValue(productRs.getCategory());
-                    row.getCell(3).setCellValue(productRs.getPrice());
-                    row.getCell(4).setCellValue(productRs.getQuantity());
-                }
-            }
+        InputStream inputStream = null;
+        Workbook workbook = new SXSSFWorkbook();
+        Sheet sheet = workbook.createSheet("products");
+        int rowCount = 1;
+        for (ProductRs productRs : productRsList) {
+            Row row = sheet.createRow(rowCount++);
+            row.createCell(0).setCellValue(productRs.getId());
+            row.createCell(1).setCellValue(productRs.getName());
+            row.createCell(2).setCellValue(productRs.getCategory());
+            row.createCell(3).setCellValue(productRs.getPrice());
+            row.createCell(4).setCellValue(productRs.getQuantity());
+        }
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+            workbook.write(out);
+            byte[] bytes = out.toByteArray();
+            inputStream = new ByteArrayInputStream(bytes);
+            workbook.close();
         } catch (IOException e) {
             throw new IOException(e.getCause());
 
         }
+        return inputStream;
     }
 
 }
