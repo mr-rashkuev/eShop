@@ -21,6 +21,5 @@ public class OrderInputRq {
     private Obtain obtaining;
     private Payment payment;
     private List<ProductDetails> products;
-
-
+    private String cardNumber;
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
@@ -37,7 +38,7 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
-    private final HttpClient httpClient;
+    private final AccountClient accountClient;
 
     public List<OrderRs> findOrdersByCustomer(Long customerId) {
         CustomerEntity customer = customerRepository.findById(customerId)
@@ -82,11 +83,9 @@ public class OrderService {
         order.setStatus(Status.RESERVED);
         orderRepository.save(order);
         checkAndAddProductToOrder(order, orderInputRq.getProducts());
+        accountClient.tryToMakePayment(new PaymentData("123456789", BigDecimal.valueOf(30000)));
     }
-    public String payTheOrder(){
-        httpClient.performRequest("url");
-       return "";
-    }
+
 
     private void checkAndAddProductToOrder(OrderEntity order, List<ProductDetails> productAndQuantities) {
         List<Long> productIdList = productAndQuantities
